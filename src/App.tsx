@@ -1,8 +1,7 @@
-import "./App.css";
-import CavansMatrix from "./components/CavansMatrix/CavansMatrix";
+import CanvasMatrix from "./components/CanvasMatrix/CanvasMatrix";
 
 function App() {
-  return <CavansMatrix />;
+  return <CanvasMatrix />;
 }
 
 export default App;
