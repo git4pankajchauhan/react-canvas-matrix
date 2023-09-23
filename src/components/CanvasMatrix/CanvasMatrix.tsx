@@ -1,25 +1,30 @@
-import React, { useState } from "react";
+import React from "react";
 import InputSlider from "../InputSlider/InputSlider";
+import { useDrawCanvas } from "./CanvasMatrix.hooks";
 import classes from "./CanvasMatrix.module.css";
 import { IProps } from "./CanvasMatrix.utils";
 
 const CanvasMatrix = (props: IProps) => {
-  const {} = props;
-
-  const [scale, setScale] = useState(1);
+  const { canvasRef, zoomScale, setZoomScale } = useDrawCanvas(props);
 
   const onScaleChange: React.FormEventHandler<HTMLInputElement> = (e) => {
-    console.log(e.currentTarget.value);
-    setScale(Number(e.currentTarget.value));
+    setZoomScale(Number(e.currentTarget.value));
   };
 
   return (
     <main className={classes.rootContainer}>
       <section className={classes.canvasBox}>
-        <canvas className={classes.matrixCanvas}></canvas>
+        <canvas ref={canvasRef} className={classes.matrixCanvas}></canvas>
       </section>
       <section className={classes.canvasActions}>
-        <InputSlider valueLabel={`${scale}`} value={scale} onChange={onScaleChange} />
+        <InputSlider
+          min={0.1}
+          max={2}
+          step={0.1}
+          valueLabel={`${(zoomScale * 100).toFixed()}%`}
+          value={zoomScale}
+          onChange={onScaleChange}
+        />
       </section>
     </main>
   );

@@ -9,17 +9,20 @@
   background-color: var(--grey-color-25);
   padding: 3rem;
   gap: 2rem;
-  justify-content: center;
 }
 
 .canvasBox {
-  padding: 2rem;
-  overflow: auto;
-  min-height: 200px;
+  overflow: hidden;
+  flex: 1;
   border: 1px solid var(--grey-color-100);
-  max-width: 90%;
+  width: 90%;
   border-radius: 4px;
   box-shadow: var(--shadow-1);
+  display: grid;
+  place-items: center;
 }
 .matrixCanvas {
+}
+.canvasActions {
+  margin-top: auto;
 }
