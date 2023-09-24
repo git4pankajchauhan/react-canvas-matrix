@@ -4,8 +4,8 @@ function App() {
   return (
     <CanvasMatrix
       gridRows={8}
-      gridColumn={6}
-      gridHeight={40}
+      gridColumn={4}
+      gridHeight={45}
       gridWidth={35}
       emptyGrid={
         {
@@ -15,10 +15,6 @@ function App() {
           // toCol:3
         }
       }
-      multiSymbolIndex={{
-        col: 4,
-        row: 4,
-      }}
     />
   );
 }
