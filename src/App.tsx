@@ -4,17 +4,21 @@ function App() {
   return (
     <CanvasMatrix
       gridRows={8}
-      gridColumn={4}
+      gridColumn={8}
       gridHeight={45}
       gridWidth={35}
       emptyGrid={
         {
-          // fromRow: 2,
-          // toRow: 2,
-          // fromCol: 2,
-          // toCol:3
+          fromRow: 0,
+          toRow: 3,
+          fromCol: 1,
+          toCol:5
         }
       }
+      multiSymbolIndex={{
+        col:1,
+        row:1
+      }}
     />
   );
 }

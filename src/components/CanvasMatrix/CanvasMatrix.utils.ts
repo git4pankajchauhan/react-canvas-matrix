@@ -14,3 +14,5 @@ export interface IProps {
     row: number;
   };
 }
+
+export type TScaleOffset = { x: number; y: number };

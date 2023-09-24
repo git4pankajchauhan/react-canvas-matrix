@@ -18,10 +18,18 @@
   width: 90%;
   border-radius: 4px;
   box-shadow: var(--shadow-1);
-  display: grid;
-  place-items: center;
+  /* display: grid;
+  place-items: center; */
+  background-color: var(--light-color);
+  padding: 0.5rem;
+  position: relative;
 }
 .matrixCanvas {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
 }
 .canvasActions {
   margin-top: auto;

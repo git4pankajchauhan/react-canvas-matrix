@@ -5,10 +5,10 @@ import classes from "./CanvasMatrix.module.css";
 import { IProps } from "./CanvasMatrix.utils";
 
 const CanvasMatrix = (props: IProps) => {
-  const { canvasRef, zoomScale, setZoomScale } = useDrawCanvas(props);
+  const { canvasRef, scale, setScale } = useDrawCanvas(props);
 
   const onScaleChange: React.FormEventHandler<HTMLInputElement> = (e) => {
-    setZoomScale(Number(e.currentTarget.value));
+    setScale(Number(e.currentTarget.value));
   };
 
   return (
@@ -21,8 +21,8 @@ const CanvasMatrix = (props: IProps) => {
           min={0.1}
           max={2}
           step={0.1}
-          valueLabel={`${(zoomScale * 100).toFixed()}%`}
-          value={zoomScale}
+          valueLabel={`${(scale * 100).toFixed()}%`}
+          value={scale}
           onChange={onScaleChange}
         />
       </section>
