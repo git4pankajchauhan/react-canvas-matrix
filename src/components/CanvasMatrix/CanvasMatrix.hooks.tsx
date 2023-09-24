@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { FormEventHandler, MutableRefObject, PointerEvent, useLayoutEffect, useRef, useState } from "react";
 import {
   drawCircle,
   drawMultipleSymbols,
@@ -7,14 +7,10 @@ import {
   drawTriangle,
   setDPI,
 } from "./CanvasMatrix.functions";
-import { IProps, TScaleOffset } from "./CanvasMatrix.utils";
+import { IProps, TAxis } from "./CanvasMatrix.utils";
 
-export const useDrawCanvas = (props: IProps) => {
+export const useDrawCanvas = (props: IProps, canvasRef: MutableRefObject<HTMLCanvasElement>, scale: number) => {
   const { gridColumn, gridRows, gridHeight, gridWidth, emptyGrid, multiSymbolIndex } = props;
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  const [scale, setScale] = useState<number>(1);
-  const [scaleOffset, setScaleOffset] = useState<TScaleOffset>({ x: 0, y: 0 });
 
   useLayoutEffect(() => {
     const canvas = canvasRef.current;
@@ -25,11 +21,6 @@ export const useDrawCanvas = (props: IProps) => {
 
     const scaledGridWidth = gridWidth * scale;
     const scaledGridHeight = gridHeight * scale;
-
-    const scaleOffsetX = (scaledGridWidth - canvas.width) / 2;
-    const scaleOffsetY = (scaledGridHeight - canvas.height) / 2;
-
-    setScaleOffset({ x: scaleOffsetX, y: scaleOffsetY });
 
     const totalWidth = gridColumn * scaledGridWidth;
     const totalHeight = gridRows * scaledGridHeight;
@@ -61,7 +52,6 @@ export const useDrawCanvas = (props: IProps) => {
 
     setDPI(canvas, ctx, totalWidth, totalHeight);
 
-    /* This is clearing the entire canvas by erasing all  the pixels within the specified rectangle. */
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     for (let row = 0; row < gridRows; row++) {
@@ -101,6 +91,51 @@ export const useDrawCanvas = (props: IProps) => {
         ctx.strokeRect(x, y, scaledGridWidth, scaledGridHeight);
       }
     }
-  }, [gridRows, gridColumn, gridHeight, gridWidth, emptyGrid, multiSymbolIndex, scale]);
-  return { canvasRef, scale, setScale };
+  }, [gridRows, gridColumn, gridHeight, gridWidth, emptyGrid, multiSymbolIndex, scale, canvasRef]);
+};
+
+export const usePanAndZoom = (canvasRef: MutableRefObject<HTMLCanvasElement>) => {
+  const [scale, setScale] = useState<number>(1);
+
+  const panGesture = useRef({ xStart: 0, yStart: 0, isPanning: false });
+  const panOffset = useRef<TAxis>({ x: 0, y: 0 });
+
+  const onPanStart = (event: PointerEvent<HTMLCanvasElement>) => {
+    if (!canvasRef.current) return;
+    const { pointerId, clientX, clientY } = event;
+
+    canvasRef.current.setPointerCapture(pointerId);
+    panGesture.current.xStart = clientX;
+    panGesture.current.yStart = clientY;
+    panGesture.current.isPanning = true;
+    canvasRef.current.style.cursor = "grabbing";
+  };
+
+  const onPanActive = (event: PointerEvent<HTMLCanvasElement>) => {
+    if (!panGesture.current.isPanning) return;
+    const { clientX, clientY } = event;
+
+    const deltaX = clientX - panGesture.current.xStart;
+    const deltaY = clientY - panGesture.current.yStart;
+
+    panGesture.current.xStart = clientX;
+    panGesture.current.yStart = clientY;
+
+    const newX = panOffset.current.x + deltaX;
+    const newY = panOffset.current.y + deltaY;
+    panOffset.current.x = newX;
+    panOffset.current.y = newY;
+    canvasRef.current.style.translate = `${newX}px ${newY}px`;
+  };
+
+  const onPanEnd = () => {
+    panGesture.current.isPanning = false;
+    canvasRef.current.style.cursor = "grab";
+  };
+
+  const onScaleChange: FormEventHandler<HTMLInputElement> = (e) => {
+    setScale(Number(e.currentTarget.value));
+  };
+
+  return { scale, onScaleChange, onPanStart, onPanActive, onPanEnd };
 };

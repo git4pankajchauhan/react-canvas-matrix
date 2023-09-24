@@ -1,20 +1,26 @@
-import React from "react";
+import { useRef } from "react";
 import InputSlider from "../InputSlider/InputSlider";
-import { useDrawCanvas } from "./CanvasMatrix.hooks";
+import { useDrawCanvas, usePanAndZoom } from "./CanvasMatrix.hooks";
 import classes from "./CanvasMatrix.module.css";
 import { IProps } from "./CanvasMatrix.utils";
 
 const CanvasMatrix = (props: IProps) => {
-  const { canvasRef, scale, setScale } = useDrawCanvas(props);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const onScaleChange: React.FormEventHandler<HTMLInputElement> = (e) => {
-    setScale(Number(e.currentTarget.value));
-  };
+  const { scale, onScaleChange, onPanStart, onPanActive, onPanEnd } = usePanAndZoom(canvasRef);
+
+  useDrawCanvas(props, canvasRef, scale);
 
   return (
     <main className={classes.rootContainer}>
       <section className={classes.canvasBox}>
-        <canvas ref={canvasRef} className={classes.matrixCanvas}></canvas>
+        <canvas
+          ref={canvasRef}
+          className={classes.matrixCanvas}
+          onPointerDown={onPanStart}
+          onPointerMove={onPanActive}
+          onPointerUp={onPanEnd}
+        ></canvas>
       </section>
       <section className={classes.canvasActions}>
         <InputSlider

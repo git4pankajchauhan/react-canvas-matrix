@@ -15,4 +15,4 @@ export interface IProps {
   };
 }
 
-export type TScaleOffset = { x: number; y: number };
+export type TAxis = { x: number; y: number };
